@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CPApplicationDelegateClass</key>
+	<string>AppController</string>
+	<key>CPBundleName</key>
+	<string>FlickrPhoto</string>
+	<key>CPPrincipalClass</key>
+	<string>CPApplication</string>
+	<key>CPDescription</key>
+	<string>
+		This example creates an iPhoto like application that loads photos from Flickr. It's a good example of using toolbars, collection views, and JSONP style remote URL requests.
+	</string>
+</dict>
+</plist>

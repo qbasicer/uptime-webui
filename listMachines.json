@@ -1,0 +1,1 @@
+vectecJsonApi({"hosts":[{"host":"eggo","lastHeard":"2010-08-17 11:05:16","updateInterval":300,"health":"green","uptime":"4 days, 14 hours, 58 minutes, 13 seconds","uname":"Linux eggo 2.6.34-gentoo-r1 #11 SMP Thu Aug 12 19:18:02 EDT 2010 x86_64","1min":0.1,"5min":0.15,"10min":0.18}]})
