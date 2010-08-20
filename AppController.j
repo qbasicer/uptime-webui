@@ -152,6 +152,8 @@ var SliderToolbarItemIdentifier = "SliderToolbarItemIdentifier",
 - (void)addHosts:(CPArray)hostList
 {
 	//[hosts setObject:hostList];
+	[hosts removeAllObjects];
+	[listCollectionView setContent:nil];
 	var i;
 	for(i = 0; i < [hostList count]; i++){
 		var host = [hostList objectAtIndex:i];
@@ -320,6 +322,7 @@ var SliderToolbarItemIdentifier = "SliderToolbarItemIdentifier",
 	CPView          highlightView;
 	CPView                        normalView;
 	JSObject                hostObject;
+	BOOL isSelected;
 }
 
 - (void)setRepresentedObject:(JSObject)anObject
@@ -331,8 +334,14 @@ var SliderToolbarItemIdentifier = "SliderToolbarItemIdentifier",
 		[label setFont:[CPFont systemFontOfSize:16.0]];
 		[label setTextShadowColor:[CPColor grayColor]];
 		[label setTextShadowOffset:CGSizeMake(0, 1)];
+		isSelected = NO;
 
 		[self addSubview:label];
+	}else{
+		if(hostObject != anObject){
+			[self rebuildColours];
+			[self setSelected:isSelected];
+		}
 	}
 	var levelOne = [[CPString alloc] initWithString:""];
 	var levelTwo = [[CPString alloc] initWithString:""];
@@ -343,12 +352,7 @@ var SliderToolbarItemIdentifier = "SliderToolbarItemIdentifier",
 	}else if (anObject.uptime < 3600){
 		levelOne = (Math.floor(anObject.uptime/60) + "m, ");
 		levelTwo = (Math.floor(anObject.uptime%60) + "s");
-
-		//[levelOne setStringValue:(anObject.uptime/60 + "m, ")];
-		//[levelTwo setStringValue:(anObject.uptime%60 + "s")];
 	}else if (anObject.uptime < 86400){
-		//[levelOne setStringValue:(anObject.uptime/3600 + "h, ")];
-		//[levelTwo setStringValue:(((anObject.uptime/60)%60) + " minutes")];
 		levelOne = (Math.floor(anObject.uptime/3600) + "h, ");
 		levelTwo = (Math.floor((anObject.uptime/60)%60) + "m");
 	}else{
@@ -356,42 +360,50 @@ var SliderToolbarItemIdentifier = "SliderToolbarItemIdentifier",
 		levelTwo = (Math.floor((anObject.uptime/3600)%24) + "h");
 	}
 
-
-	[label setStringValue:(anObject.host+" "+levelOne+levelTwo)];
+	[label setStringValue:(anObject.host+"/"+levelOne+levelTwo)];
 	hostObject = anObject;
 	[label sizeToFit];
-
 	[label setFrameOrigin:CGPointMake(10,CGRectGetHeight([label bounds]) / 2.0)];
+}
+
+- (void)rebuildColours
+{
+	if(normalView)
+		[normalView removeFromSuperview];
+	if(highlightView)
+		[highlightView removeFromSuperview];
+	highlightView = [[CPView alloc] initWithFrame:CGRectCreateCopy([self bounds])];
+	normalView  = [[CPView alloc] initWithFrame:CGRectCreateCopy([self bounds])];
+	if (hostObject.lastHeard < 310){
+		[highlightView setBackgroundColor:[CPColor colorWithRed:70.0/255.0 green:84.0/255.0 blue:70.0/255.0 alpha:1.0]];
+		[normalView setBackgroundColor:[CPColor colorWithRed:50.0/255.0 green:64.0/255.0 blue:50.0/255.0 alpha:1.0]];
+	}else if(hostObject.lastHeard < 620){
+		[highlightView setBackgroundColor:[CPColor colorWithRed:84.0/255.0 green:84.0/255.0 blue:70.0/255.0 alpha:1.0]];
+		[normalView setBackgroundColor:[CPColor colorWithRed:64.0/255.0 green:64.0/255.0 blue:50.0/255.0 alpha:1.0]];
+	}else if(hostObject.lastHeard < 3600){
+		[highlightView setBackgroundColor:[CPColor colorWithRed:84.0/255.0 green:70.0/255.0 blue:70.0/255.0 alpha:1.0]];
+		[normalView setBackgroundColor:[CPColor colorWithRed:64.0/255.0 green:50.0/255.0 blue:50.0/255.0 alpha:1.0]];
+	}else if(hostObject.lastHeard < 86400){
+		[highlightView setBackgroundColor:[CPColor colorWithRed:70.0/255.0 green:70.0/255.0 blue:84.0/255.0 alpha:1.0]];
+		[normalView setBackgroundColor:[CPColor colorWithRed:50.0/255.0 green:50.0/255.0 blue:64.0/255.0 alpha:1.0]];
+	}else{
+		[highlightView setBackgroundColor:[CPColor grayColor]];
+		[normalView setBackgroundColor:[CPColor clearColor]];
+	}
+
+
 }
 
 - (void)setSelected:(BOOL)flag
 {
 	if(!highlightView)
 	{
-		highlightView = [[CPView alloc] initWithFrame:CGRectCreateCopy([self bounds])];
-		normalView  = [[CPView alloc] initWithFrame:CGRectCreateCopy([self bounds])];
-		if (hostObject.lastHeard < 310){
-			[highlightView setBackgroundColor:[CPColor colorWithRed:70.0/255.0 green:84.0/255.0 blue:70.0/255.0 alpha:1.0]];
-			[normalView setBackgroundColor:[CPColor colorWithRed:50.0/255.0 green:64.0/255.0 blue:50.0/255.0 alpha:1.0]];
-		}else if(hostObject.lastHeard < 620){
-			[highlightView setBackgroundColor:[CPColor colorWithRed:84.0/255.0 green:84.0/255.0 blue:70.0/255.0 alpha:1.0]];
-			[normalView setBackgroundColor:[CPColor colorWithRed:64.0/255.0 green:64.0/255.0 blue:50.0/255.0 alpha:1.0]];
-		}else if(hostObject.lastHeard < 3600){
-			[highlightView setBackgroundColor:[CPColor colorWithRed:84.0/255.0 green:70.0/255.0 blue:70.0/255.0 alpha:1.0]];
-			[normalView setBackgroundColor:[CPColor colorWithRed:64.0/255.0 green:50.0/255.0 blue:50.0/255.0 alpha:1.0]];
-		}else if(hostObject.lastHeard < 86400){
-			[highlightView setBackgroundColor:[CPColor colorWithRed:70.0/255.0 green:70.0/255.0 blue:84.0/255.0 alpha:1.0]];
-			[normalView setBackgroundColor:[CPColor colorWithRed:50.0/255.0 green:50.0/255.0 blue:64.0/255.0 alpha:1.0]];
-		}else{
-			[highlightView setBackgroundColor:[CPColor grayColor]];
-			[normalView setBackgroundColor:[CPColor clearColor]];
-		}
-
-
+		[self rebuildColours];
 	}
 
 	if(flag)
 	{
+		isSelected = YES;
 		[self addSubview:highlightView positioned:CPWindowBelow relativeTo:label];
 		[normalView removeFromSuperview];
 		[label setTextColor:[CPColor blackColor]];    
@@ -399,6 +411,7 @@ var SliderToolbarItemIdentifier = "SliderToolbarItemIdentifier",
 	}
 	else
 	{
+		isSelected = NO;
 		[highlightView removeFromSuperview];
 		[self addSubview:normalView positioned:CPWindowBelow relativeTo:label];
 		[label setTextColor:[CPColor grayColor]];
