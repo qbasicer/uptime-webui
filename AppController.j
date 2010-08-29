@@ -95,7 +95,7 @@ var SliderToolbarItemIdentifier = "SliderToolbarItemIdentifier",
 	//bring forward the window to display it
 	[theWindow orderFront:self];
 
-	var request = [CPURLRequest requestWithURL:"http://data.vectec.net/uptime/json.php"];
+	var request = [CPURLRequest requestWithURL:"http://data.vectec.net/uptime/json.php?query=allhosts"];
 
 	// see important note about CPJSONPConnection above
 	[CPJSONPConnection sendRequest:request callback:"jsoncallback" delegate:self];
@@ -108,7 +108,7 @@ var SliderToolbarItemIdentifier = "SliderToolbarItemIdentifier",
 	//var request = [CPURLRequest requestWithURL:"http://www.flickr.com/services/rest/?"+
 	//        "method=flickr.photos.search&tags="+encodeURIComponent(string)+
 	//        "&media=photos&machine_tag_mode=any&per_page=20&format=json&api_key=ca4dd89d3dfaeaf075144c3fdec76756"];
-	var request = [CPURLRequest requestWithURL:"http://data.vectec.net/uptime/json.php"];
+	var request = [CPURLRequest requestWithURL:"http://data.vectec.net/uptime/json.php?query=allhosts"];
 	[sideStatus setLoaded:NO];
 	// see important note about CPJSONPConnection above
 	[CPJSONPConnection sendRequest:request callback:"jsoncallback" delegate:self];
